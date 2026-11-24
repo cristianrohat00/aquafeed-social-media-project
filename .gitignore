@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+step1/fontcheck/
+__pycache__/
+*.pyc
+step1/fontcheck/
+# Repo is public: keep third-party media, scraped posts and renders out
+step1/src/
+step1/raw/
+step1/cand/
+step1/out/
+step1/stock/
+.env
+step1/brand/biomar-logo-rgb-01.png
