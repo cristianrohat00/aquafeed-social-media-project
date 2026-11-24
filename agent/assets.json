@@ -55,8 +55,9 @@
   },
   {
    "path": "BioMar post images",
-   "use": "pending",
-   "why": "written OK from BioMar not yet received"
+   "use": "ok",
+   "why": "BioMar agreed to use on social media (confirmed by Cristi 2026-11-24)",
+   "how": "image URLs in aq_raw_posts.images; credit 'Foto: BioMar' when it is clearly a BioMar photo"
   },
   {
    "path": "clients/pastravaria-albota/",

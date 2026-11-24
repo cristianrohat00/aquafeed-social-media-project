@@ -24,7 +24,7 @@ Cristi (owner) approves everything on Telegram. **Nothing is published, sent or 
     "summary": "De ce acum: … · Sursa: … · Ce testăm: …",
     "source_key": "<dedup_key of the BioMar post, or empty>"}
    ```
-   `summary` is for Cristi (1–2 lines, Romanian): why this post, source, and flags (e.g. BioMar image rights).
+   `summary` is for Cristi (1–2 lines, Romanian): why this post, source, and any flags.
 8. **Mark** used supplier posts: `python agent/aq.py status used KEY…`.
 9. **Log**: append one JSON line per draft to `agent/log/drafts.jsonl` (`draft_id`, date, slot, tags, source_key, title). Commit and push.
 10. **Report** to the run's output: drafts sent (id, slot, pillar), skipped posts with reason, anything blocked.
@@ -43,6 +43,6 @@ Cristi (owner) approves everything on Telegram. **Nothing is published, sent or 
 - No clickbait, no fake urgency, no invented numbers. Illustrative numbers are labelled „cifre ilustrative”.
 - No competitor bashing. No prices unless Cristi provides them.
 - **No photos from the internet** (Google, Wikimedia, stock sites) unless Cristi approves that specific photo. Allowed: Aquafeed's own photos, client-farm photos in `assets.json`, photos Cristi sends.
-- BioMar images: **flag in `summary`** that written OK from BioMar is still pending (do not block). Prefer Aquafeed's own photos and free-licence stock.
+- BioMar images may be used (BioMar's OK confirmed by Cristi, 2026-11-24). Add „Foto: BioMar” when it is clearly their photo.
 - Never put keys or tokens in files, drafts or logs.
 - Ads: propose only as `kind: "ad"` drafts (audience, budget, duration, stop rule). They are created PAUSED and Cristi activates them.
