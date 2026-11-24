@@ -11,6 +11,9 @@ session's network proxy, so no key is read or stored here.
   python agent/aq.py drafts [SINCE YYYY-MM-DD]    -> drafts: status, tags, original vs approved text, edits
   python agent/aq.py stats                        -> saved post checkpoints + daily page followers
   python agent/aq.py fetch-image URL OUT.jpg      -> download a BioMar image (FB/IG/LinkedIn CDN) via n8n
+  python agent/aq.py memory-get KEY [OUT_FILE]     -> agent memory in n8n (playbook, superseded, weekly:<date>, run:<date>)
+  python agent/aq.py memory-put KEY FILE           -> save a file's text under KEY
+  python agent/aq.py memory-list [PREFIX]          -> keys in memory
 """
 import base64, json, os, subprocess, sys
 
@@ -82,6 +85,19 @@ def main(a):
         os.makedirs(os.path.dirname(os.path.abspath(a[2])), exist_ok=True)
         open(a[2], "wb").write(base64.b64decode(r["b64"]))
         res = {"saved": a[2], "bytes": r.get("bytes"), "mime": r.get("mime")}
+    elif cmd == "memory-get":
+        r = call("GET", "/memory", query="?k=" + a[1])
+        if len(a) > 2:
+            if not r.get("found"):
+                sys.exit("not in memory: " + a[1])
+            open(a[2], "w", encoding="utf-8").write(r["v"])
+            res = {"saved": a[2], "updated": r.get("updated")}
+        else:
+            res = r
+    elif cmd == "memory-put":
+        res = call("POST", "/memory", {"k": a[1], "v": open(a[2], encoding="utf-8").read()})
+    elif cmd == "memory-list":
+        res = call("GET", "/memory", query="?prefix=" + (a[1] if len(a) > 1 else ""))
     else:
         sys.exit(__doc__)
     print(json.dumps(res, ensure_ascii=False, indent=1))

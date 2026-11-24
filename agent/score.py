@@ -117,7 +117,13 @@ def main(argv):
 
     # approvals and edits (learning from Cristi)
     sup_path = os.path.join(HERE, "log", "superseded.txt")
-    superseded = set(l.strip() for l in open(sup_path, encoding="utf-8") if l.strip() and not l.startswith("#")) if os.path.exists(sup_path) else set()
+    lines = open(sup_path, encoding="utf-8").read().splitlines() if os.path.exists(sup_path) else []
+    if "--stats" not in argv:  # live: superseded ids also kept in n8n memory by scheduled runs
+        try:
+            lines += (fetch(["memory-get", "superseded"]).get("v") or "").splitlines()
+        except Exception:
+            pass
+    superseded = set(l.split("#")[0].strip() for l in lines if l.split("#")[0].strip())
     # only real agent drafts (tagged with a pillar), not tests or superseded versions
     dec = [d for d in drafts["drafts"] if d["kind"] == "post" and d["status"] not in ("pending", "info")
            and (d.get("tags") or {}).get("pillar") and d["draft_id"] not in superseded]

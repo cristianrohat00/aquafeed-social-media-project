@@ -46,7 +46,7 @@ Propunere reclamă: <da/nu + 1 rând>
 ```
 
 ## 6. Write back
-- `playbook.md`: rules, hypotheses, learned voice, and one line in *Change log* per change (date, what, evidence).
-- `agent/log/weekly/<YYYY-MM-DD>.md`: the full `score.py --md` output + the report text.
-- Commit and push.
+- Start from the memory copy: `python agent/aq.py memory-get playbook agent/playbook.md`. Edit rules, hypotheses, learned voice, and add one line in *Change log* per change (date, what, evidence). Save: `python agent/aq.py memory-put playbook agent/playbook.md`.
+- Save the full `score.py --md` output + the report text: `memory-put weekly:<YYYY-MM-DD> weekly.md`.
+- Do not push to git (see RUN.md). Claude syncs the memory playbook into the repo during maintenance.
 - Never change `score_weights` or the cadence in config.json without Cristi's OK; propose it in the report instead.

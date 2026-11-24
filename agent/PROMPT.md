@@ -26,7 +26,7 @@ Cristi (owner) approves everything on Telegram. **Nothing is published, sent or 
    ```
    `summary` is for Cristi (1–2 lines, Romanian): why this post, source, and any flags.
 8. **Mark** used supplier posts: `python agent/aq.py status used KEY…`.
-9. **Log**: append one JSON line per draft to `agent/log/drafts.jsonl` (`draft_id`, date, slot, tags, source_key, title). If you re-send a corrected version, add the old id to `agent/log/superseded.txt`. Commit and push.
+9. **Log**: save a run note in n8n memory: `python agent/aq.py memory-put run:<YYYY-MM-DD> note.md` (drafts sent: id, slot, tags, title; posts skipped and why). If you re-send a corrected version, append the old id to memory key `superseded`. Do not push to git (see RUN.md).
    Tags matter: they are how the weekly learning (`agent/WEEKLY.md`, `agent/score.py`) knows what worked. Always set pillar, format, hook, audience, topic, cta, explore.
 10. **Report** to the run's output: drafts sent (id, slot, pillar), skipped posts with reason, anything blocked.
 
