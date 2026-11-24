@@ -12,6 +12,7 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOGO = os.path.join(HERE, "step1", "brand", "Original_Logo_with_text.png")
 BIOMAR_LOGO = os.path.join(HERE, "step1", "brand", "biomar-logo-rgb-01.png")
+LOGO_LIGHT = os.path.join(HERE, "step1", "brand", "aquafeed_logo_light.png")  # transparent, white wordmark
 FONT_DIR = "/usr/share/fonts/opentype/inter"
 W, H = 1080, 1350
 
@@ -104,12 +105,29 @@ def logo_badge(height=120, path=None):
     return badge
 
 
+def bare_logo(path, height):
+    """Logo without background, with a soft shadow so it reads on light and dark photos."""
+    lg = Image.open(path).convert("RGBA")
+    lg = lg.crop(lg.getbbox())
+    r = height / lg.height
+    lg = lg.resize((int(lg.width * r), height), Image.LANCZOS)
+    pad = 24
+    out = Image.new("RGBA", (lg.width + 2 * pad, lg.height + 2 * pad), (0, 0, 0, 0))
+    sh = Image.new("RGBA", out.size, (0, 0, 0, 0))
+    a = lg.split()[3].point(lambda v: int(v * 0.75))
+    sh.paste((0, 0, 0, 255), (pad, pad + 3), a)
+    out.alpha_composite(sh.filter(ImageFilter.GaussianBlur(9)))
+    out.alpha_composite(lg, (pad, pad))
+    return out, pad
+
+
 def logos(img, height):
-    """Aquafeed badge top-left; BioMar badge top-right unless the photo already shows BioMar."""
-    img.alpha_composite(logo_badge(height), (40, 40))
+    """Aquafeed logo top-left; BioMar logo top-right unless the photo already shows BioMar. No white badges."""
+    a, pad = bare_logo(LOGO_LIGHT, int(height * 1.6))
+    img.alpha_composite(a, (40 - pad, 36 - pad))
     if BIOMAR:
-        b = logo_badge(height, BIOMAR_LOGO)
-        img.alpha_composite(b, (W - 40 - b.width, 40))
+        b, pad = bare_logo(BIOMAR_LOGO, int(height * 0.95))
+        img.alpha_composite(b, (W - 40 - b.width + pad, 36 - pad))
 
 
 BIOMAR = True  # set per image: render.BIOMAR = False when the photo already shows the BioMar logo

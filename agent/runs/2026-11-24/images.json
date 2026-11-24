@@ -1,24 +1,42 @@
 [
- {"template": "split", "photo_path": "step1/stock/c44.jpg", "kicker": "Fermieri care inspiră",
+ {
+  "template": "split",
+  "photo_path": "step1/stock/c44.jpg",
+  "kicker": "Fermieri care inspiră",
   "title": "De la Bretania la Carpați: aceleași provocări",
   "body": "Apa care se încălzește vara, oxigenul, sănătatea peștilor, furajul potrivit.\n\nThomas Tison crește păstrăv în Franța. Ce a învățat se aplică și la noi.",
-  "out": "agent/out/2026-11-24_a_kerinec.jpg", "photo_h": 660, "credit": "Foto: păstrăvărie în Maramureș · Remus Pereni, CC BY 2.0"},
- {"template": "card", "kicker": "Sănătatea peștilor",
-  "title": "Virusurile nu se văd. Prevenția, da.",
-  "bullets": ["Icre și puiet doar din ferme cu statut de sănătate atestat.",
-              "Carantină pentru loturile noi, dezinfecție pentru echipamente și cizme.",
-              "Fără stres inutil: densitate, manipulare, oxigen."],
+  "out": "agent/out/2026-11-24_a_kerinec.jpg",
+  "photo_h": 660,
+  "credit": "Foto: păstrăvărie în Maramureș · Remus Pereni, CC BY 2.0"
+ },
+ {
+  "template": "card",
+  "kicker": "Sănătatea peștilor",
+  "title": "Virușii nu se văd. Prevenția, da.",
+  "bullets": [
+   "Icre și puiet doar din ferme cu statut de sănătate atestat.",
+   "Carantină pentru loturile noi, dezinfecție pentru echipamente și cizme.",
+   "Fără stres inutil: densitate, manipulare, oxigen."
+  ],
   "numbered": true,
   "note": "Pentru bolile virale nu există tratament. Mortalitate neobișnuită? Sunați medicul veterinar.",
-  "header_photo": "step1/brand/apa_curata_pesti.jpg", "header_h": 470,
+  "header_photo": "step1/brand/apa_curata_pesti.jpg",
+  "header_h": 470,
   "source": "Sursa: Reg. (UE) 2016/429 și 2018/1882 · BioMar Fish Health 101",
-  "out": "agent/out/2026-11-24_b_virusuri.jpg"},
- {"template": "card", "kicker": "Din culisele BioMar",
+  "out": "agent/out/2026-11-24_b_virusuri.jpg"
+ },
+ {
+  "template": "card",
+  "kicker": "Din culisele BioMar",
   "title": "Rețeta se poate schimba. Nutriția păstrăvului, nu.",
-  "bullets": ["Clima schimbă recoltele și capturile, deci și ce materii prime există.",
-              "BioMar formulează pe nutrienți, nu pe o listă fixă de ingrediente.",
-              "Ținta rămâne aceeași: proteina, grăsimile și energia de care are nevoie peștele."],
-  "header_photo": "step1/brand/contactpage_image.jpg", "header_h": 470,
+  "bullets": [
+   "Clima schimbă recoltele și capturile, deci și ce materii prime există.",
+   "BioMar formulează pe nutrienți, nu pe o listă fixă de ingrediente.",
+   "Ținta rămâne aceeași: proteina, grăsimile și energia de care are nevoie peștele."
+  ],
+  "header_photo": "step1/brand/contactpage_image.jpg",
+  "header_h": 470,
   "source": "Sursa: BioMar, Feeding through a changing climate (nov. 2026)",
-  "out": "agent/out/2026-11-24_c_reteta.jpg"}
+  "out": "agent/out/2026-11-24_c_reteta.jpg"
+ }
 ]
