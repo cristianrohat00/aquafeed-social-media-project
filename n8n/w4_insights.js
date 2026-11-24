@@ -61,9 +61,20 @@ const save = node({ type: 'n8n-nodes-base.dataTable', version: 1.1,
         reactions: '={{ $json.reactions }}', comments: '={{ $json.comments }}', shares: '={{ $json.shares }}', raw: '={{ $json.raw }}' }, matchingColumns: [], schema: [] } } },
   output: [{ id: 1 }] });
 
-const note = sticky('## AQ Insights collector (copy)\nEvery hour:\n- page followers -> aq_page_daily (one row per day, last value wins)\n- for every agent post live on Facebook: stats at 24h, 72h, 168h after it went live -> aq_post_stats (reach, views, clicks, reactions, comments, shares)\nThe agent reads both through GET /webhook/aq/stats and scores posts (agent/score.py).', [], { color: 6, width: 520, height: 200, position: [0, -200] });
+const tokenCheck = node({ type: 'n8n-nodes-base.code', version: 2,
+  config: { name: 'Token problem?', position: [480, -100], parameters: { mode: 'runOnceForAllItems',
+    jsCode: "const j = $input.first().json || {};\nif (!j.error) return [];\nconst h = Number(new Date().toLocaleString('en-GB', { timeZone: 'Europe/Bucharest', hour: '2-digit', hour12: false }));\nif (h !== 9) return [];\nconst m = String((j.error && j.error.message) || j.error).slice(0, 200);\nreturn [{ json: { msg: '⚠️ Tokenul Facebook nu mai funcționează. Publicarea și statisticile sunt oprite până îl înlocuiești în n8n (credențialul FB Page token).\\n' + m } }];" } },
+  output: [{ msg: 'x' }] });
+const tokenAlert = node({ type: 'n8n-nodes-base.telegram', version: 1.2,
+  config: { name: 'Alert token', position: [720, -100],
+    parameters: { resource: 'message', operation: 'sendMessage', chatId: '8274657378', text: '={{ $json.msg }}', additionalFields: { appendAttribution: false } },
+    credentials: { telegramApi: { id: 'EtigVq0WqJs79pt0', name: 'Telegram account' } } },
+  output: [{ ok: true }] });
+
+const note = sticky('## AQ Insights collector (copy)\nEvery hour:\n- page followers -> aq_page_daily (one row per day, last value wins)\n- for every agent post live on Facebook: stats at 24h, 72h, 168h after it went live -> aq_post_stats (reach, views, clicks, reactions, comments, shares)\nThe agent reads both through GET /webhook/aq/stats and scores posts (agent/score.py).\nIf the FB token fails: Telegram alert once a day at 09:00.', [], { color: 6, width: 520, height: 200, position: [0, -200] });
 
 export default workflow('aq-insights', 'AQ Insights collector [copy]')
   .add(hourly).to(pageGraph.to(pageRow.to(pageUpsert)))
+  .add(pageGraph).to(tokenCheck.to(tokenAlert))
   .add(hourly).to(live.to(have.to(due.to(postGraph.to(shape.to(save))))))
   .add(note);
