@@ -8,6 +8,9 @@ session's network proxy, so no key is read or stored here.
   python agent/aq.py draft draft.json             -> send draft (+images) to Telegram
   python agent/aq.py insights POST_ID [POST_ID..] -> post stats + page followers
   python agent/aq.py comments [DAYS]              -> recent comments + messages
+  python agent/aq.py drafts [SINCE YYYY-MM-DD]    -> drafts: status, tags, original vs approved text, edits
+  python agent/aq.py stats                        -> saved post checkpoints + daily page followers
+  python agent/aq.py fetch-image URL OUT.jpg      -> download a BioMar image (FB/IG/LinkedIn CDN) via n8n
 """
 import base64, json, os, subprocess, sys
 
@@ -68,6 +71,17 @@ def main(a):
         res = call("GET", "/insights", query="?post_ids=" + ",".join(a[1:]) + "&metrics=" + CFG["insights_metrics"])
     elif cmd == "comments":
         res = call("GET", "/comments", query="?days=" + (a[1] if len(a) > 1 else "7"))
+    elif cmd == "drafts":
+        res = call("GET", "/drafts", query="?since=" + (a[1] if len(a) > 1 else "2026-01-01"))
+    elif cmd == "stats":
+        res = call("GET", "/stats")
+    elif cmd == "fetch-image":
+        r = call("POST", "/fetch-image", {"url": a[1]})
+        if not r.get("b64"):
+            sys.exit("image not fetched: " + json.dumps(r)[:200])
+        os.makedirs(os.path.dirname(os.path.abspath(a[2])), exist_ok=True)
+        open(a[2], "wb").write(base64.b64decode(r["b64"]))
+        res = {"saved": a[2], "bytes": r.get("bytes"), "mime": r.get("mime")}
     else:
         sys.exit(__doc__)
     print(json.dumps(res, ensure_ascii=False, indent=1))
