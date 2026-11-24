@@ -35,6 +35,7 @@ def render(spec):
     import render as r
     spec = dict(spec)
     tpl = spec.pop("template")
+    r.BIOMAR = spec.pop("biomar_logo", True)
     for k in ("crop", "header_crop"):
         if k in spec and spec[k] is not None:
             spec[k] = tuple(spec[k])

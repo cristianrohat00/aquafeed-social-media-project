@@ -14,7 +14,7 @@ Cristi (owner) approves everything on Telegram. **Nothing is published, sent or 
    Not every draft must come from BioMar: consumer posts (why trout, recipes, myths) come from `facts.md`.
 4. **Write** each post in Romanian (rules below). Then re-read it as a Romanian trout farmer and as a Brașov consumer; fix anything that sounds translated.
 5. **Fact check**: every number or health/feed claim must be in `facts.md` with a source. A new fact → add it to `facts.md` with the primary source URL first. If you cannot source it, drop it.
-6. **Image**: write a spec (template `overlay` | `split` | `card`, see `agent/aq.py` and `render.py`), photo only from `assets.json` with `use: ok`, render with `python agent/aq.py image spec.json`, look at the PNG/JPG before sending. Text on the image ≤ 20 words in the title; email + website footer is automatic; never the phone number.
+6. **Image**: write a spec (template `overlay` | `split` | `card`, see `agent/aq.py` and `render.py`), photo only from `assets.json` with `use: ok`, render with `python agent/aq.py image spec.json`, look at the PNG/JPG before sending. Text on the image ≤ 20 words in the title; email + website footer is automatic; never the phone number. The BioMar logo is added top-right automatically; set `"biomar_logo": false` in the spec only when the photo already shows the BioMar logo.
 7. **Send**: write `draft.json` and run `python agent/aq.py draft draft.json`:
    ```json
    {"kind": "post", "text": "…", "image_paths": ["agent/out/x.jpg"],

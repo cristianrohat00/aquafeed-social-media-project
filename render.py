@@ -11,6 +11,7 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOGO = os.path.join(HERE, "step1", "brand", "Original_Logo_with_text.png")
+BIOMAR_LOGO = os.path.join(HERE, "step1", "brand", "biomar-logo-rgb-01.png")
 FONT_DIR = "/usr/share/fonts/opentype/inter"
 W, H = 1080, 1350
 
@@ -87,8 +88,8 @@ def fit_text(draw, text, weight, max_w, max_h, start=96, min_size=40, spacing=1.
     return f, wrap(draw, text, f, max_w), min_size
 
 
-def logo_badge(height=120):
-    lg = Image.open(LOGO).convert("RGBA")
+def logo_badge(height=120, path=None):
+    lg = Image.open(path or LOGO).convert("RGBA")
     lg = lg.crop(lg.getbbox())
     # logo has white bg: keep it on a white rounded pill
     r = height / lg.height
@@ -101,6 +102,17 @@ def logo_badge(height=120):
     badge.paste(white, (0, 0), m)
     badge.alpha_composite(lg, (pad, pad))
     return badge
+
+
+def logos(img, height):
+    """Aquafeed badge top-left; BioMar badge top-right unless the photo already shows BioMar."""
+    img.alpha_composite(logo_badge(height), (40, 40))
+    if BIOMAR:
+        b = logo_badge(height, BIOMAR_LOGO)
+        img.alpha_composite(b, (W - 40 - b.width, 40))
+
+
+BIOMAR = True  # set per image: render.BIOMAR = False when the photo already shows the BioMar logo
 
 
 def footer(img, d, cta):
@@ -124,7 +136,7 @@ def overlay(photo_path, title, sub, out, cta=CTA, tag=None, credit=None):
     shade = Image.new("RGBA", (W, H), (10, 24, 52, 255))
     img = Image.composite(shade, img, grad)
     d = ImageDraw.Draw(img)
-    img.alpha_composite(logo_badge(110), (40, 40))
+    logos(img, 110)
     if tag:
         ft = font("Bold", 30)
         tw = d.textlength(tag.upper(), font=ft)
@@ -180,7 +192,7 @@ def card(kicker, title, bullets, out, cta=CTA, numbered=False, source=None, bg_p
             c = tuple(int(NAVY[k] * (1 - t * 0.35) + BLUE[k] * t * 0.35) for k in range(3))
             d0.line([(0, i), (W, i)], fill=c)
     d = ImageDraw.Draw(img)
-    img.alpha_composite(logo_badge(100), (40, 40))
+    logos(img, 100)
     y = header_h + 40 if header_photo else 230
     fk = font("Bold", 30)
     kw = d.textlength(kicker.upper(), font=fk)
@@ -252,7 +264,7 @@ def split(photo_path, kicker, title, body, out, crop=None, photo_h=640, cta=CTA,
     img.paste(ph, (0, 0))
     d = ImageDraw.Draw(img)
     d.rectangle([0, photo_h, W, photo_h + 8], fill=LIME)
-    img.alpha_composite(logo_badge(100), (40, 40))
+    logos(img, 100)
     if credit:
         fc = font("Regular", 22)
         tw = d.textlength(credit, font=fc)
