@@ -1,4 +1,4 @@
-import { workflow, node, trigger, merge, ifElse, sticky, newCredential } from '@n8n/workflow-sdk';
+import { workflow, node, trigger, merge, ifElse, sticky } from '@n8n/workflow-sdk';
 
 const schedule = trigger({ type: 'n8n-nodes-base.scheduleTrigger', version: 1.3,
   config: { name: 'Daily 06:30', position: [0, 300], parameters: { rule: { interval: [{ field: 'days', daysInterval: 1, triggerAtHour: 6, triggerAtMinute: 30 }] } } },
@@ -10,7 +10,7 @@ const fb = node({ type: 'n8n-nodes-base.httpRequest', version: 4.4,
       authentication: 'genericCredentialType', genericAuthType: 'httpQueryAuth',
       sendBody: true, contentType: 'json', specifyBody: 'json', jsonBody: "{\"startUrls\": [{\"url\": \"https://www.facebook.com/BioMarEMEADivision/\"}], \"resultsLimit\": 8}",
       options: { timeout: 280000 } },
-    credentials: { httpQueryAuth: newCredential('Apify token') } },
+    credentials: { httpQueryAuth: { id: 'H1occLagrkrXKn1i', name: 'Apify token' } } },
   output: [{}] });
 const ig = node({ type: 'n8n-nodes-base.httpRequest', version: 4.4,
   config: { name: 'Apify IG', position: [260, 300], onError: 'continueRegularOutput',
@@ -18,7 +18,7 @@ const ig = node({ type: 'n8n-nodes-base.httpRequest', version: 4.4,
       authentication: 'genericCredentialType', genericAuthType: 'httpQueryAuth',
       sendBody: true, contentType: 'json', specifyBody: 'json', jsonBody: "{\"directUrls\": [\"https://www.instagram.com/biomargroup/\"], \"resultsType\": \"posts\", \"resultsLimit\": 8}",
       options: { timeout: 280000 } },
-    credentials: { httpQueryAuth: newCredential('Apify token') } },
+    credentials: { httpQueryAuth: { id: 'H1occLagrkrXKn1i', name: 'Apify token' } } },
   output: [{}] });
 const li = node({ type: 'n8n-nodes-base.httpRequest', version: 4.4,
   config: { name: 'Apify LinkedIn', position: [260, 480], onError: 'continueRegularOutput',
@@ -26,7 +26,7 @@ const li = node({ type: 'n8n-nodes-base.httpRequest', version: 4.4,
       authentication: 'genericCredentialType', genericAuthType: 'httpQueryAuth',
       sendBody: true, contentType: 'json', specifyBody: 'json', jsonBody: "{\"targetUrls\": [\"https://www.linkedin.com/company/biomar-emea/\", \"https://www.linkedin.com/company/biomar-group/\"], \"maxPosts\": 6, \"postedLimit\": \"week\", \"scrapeReactions\": false, \"scrapeComments\": false, \"includeReposts\": false, \"includeQuotePosts\": true}",
       options: { timeout: 280000 } },
-    credentials: { httpQueryAuth: newCredential('Apify token') } },
+    credentials: { httpQueryAuth: { id: 'H1occLagrkrXKn1i', name: 'Apify token' } } },
   output: [{}] });
 
 const all = merge({ version: 3.2, config: { name: 'All sources', position: [520, 300], parameters: { mode: 'append', numberInputs: 3 } } });
@@ -73,12 +73,23 @@ const update = node({ type: 'n8n-nodes-base.dataTable', version: 1.1,
         matchingColumns: [], schema: [] } } },
   output: [{ id: 1 }] });
 
-const note = sticky('## Raw supplier posts (no translation)\nScrapes BioMar FB / IG / LinkedIn, normalises text and stores each post ONCE in data table aq_raw_posts.\n\nCross-source dedup: a post is the same if its text fingerprint (first 120 letters after NFKC + lowercase + strip links/hashtags) OR its embedded link (shorteners like loom.ly ignored) matches. A repeat on another platform only adds to `sources`.\n\nThe Claude agent reads rows with status=new via the Agent API workflow. Apify token = credential "Apify token" (Query Auth, name `token`).', [], { color: 4, width: 520, height: 260, position: [0, -40] });
+const srcErr = node({ type: 'n8n-nodes-base.code', version: 2,
+  config: { name: 'Failed sources?', position: [760, 560], parameters: { mode: 'runOnceForAllItems',
+    jsCode: "const errs = $input.all().map(i => i.json.error).filter(Boolean);\nif (!errs.length) return [];\nconst lines = errs.slice(0, 3).map(e => '• ' + String((e && e.message) || e).replace(/[<>&]/g, '').slice(0, 160));\nreturn [{ json: { msg: '⚠️ Scraper BioMar: ' + errs.length + ' din 3 surse au eșuat azi.\\n' + lines.join('\\n') + '\\nPostările din celelalte surse au fost salvate.' } }];" } },
+  output: [{ msg: 'x' }] });
+const alertTg = node({ type: 'n8n-nodes-base.telegram', version: 1.2,
+  config: { name: 'Alert on Telegram', position: [1000, 560],
+    parameters: { resource: 'message', operation: 'sendMessage', chatId: '8274657378', text: '={{ $json.msg }}', additionalFields: { appendAttribution: false } },
+    credentials: { telegramApi: { id: 'EtigVq0WqJs79pt0', name: 'Telegram account' } } },
+  output: [{ ok: true }] });
+
+const note = sticky('## Raw supplier posts (no translation)\nScrapes BioMar FB / IG / LinkedIn, normalises text and stores each post ONCE in data table aq_raw_posts.\n\nCross-source dedup: a post is the same if its text fingerprint (first 120 letters after NFKC + lowercase + strip links/hashtags) OR its embedded link (shorteners like loom.ly ignored) matches. A repeat on another platform only adds to `sources`.\n\nThe Claude agent reads rows with status=new via the Agent API workflow. Apify token = credential "Apify token" (Query Auth, name `token`). If a source fails, an alert goes to Telegram.', [], { color: 4, width: 520, height: 260, position: [0, -40] });
 
 export default workflow('aq-scrape-raw', 'AQ Scrape raw [copy]')
   .add(schedule).to(fb.to(all.input(0)))
   .add(schedule).to(ig.to(all.input(1)))
   .add(schedule).to(li.to(all.input(2)))
+  .add(all).to(srcErr.to(alertTg))
   .add(all).to(normalize).to(getStored).to(diff).to(isNew
     .onTrue(insert)
     .onFalse(isUpd.onTrue(update)))

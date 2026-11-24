@@ -9,6 +9,9 @@ step1/src/
 step1/raw/
 step1/cand/
 step1/out/
-step1/stock/
+step1/stock/*
+!step1/stock/c31.jpg
+!step1/stock/c44.jpg
 .env
 step1/brand/biomar-logo-rgb-01.png
+agent/out/

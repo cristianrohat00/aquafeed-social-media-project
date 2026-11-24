@@ -1,0 +1,60 @@
+{
+ "_note": "Photos the agent may use. use=ok: free to use. use=pending: needs written OK (do not use). use=no: never.",
+ "photos": [
+  {
+   "path": "step1/brand/home-page.jpg",
+   "use": "ok",
+   "owner": "Aquafeed",
+   "shows": "trout / fish (site hero image)"
+  },
+  {
+   "path": "step1/brand/apa_curata_pesti.jpg",
+   "use": "ok",
+   "owner": "Aquafeed",
+   "shows": "close-up of fish scales and tail"
+  },
+  {
+   "path": "step1/brand/productie_furaj.jpg",
+   "use": "ok",
+   "owner": "Aquafeed",
+   "shows": "feed production / pellets"
+  },
+  {
+   "path": "step1/brand/products_image.jpg",
+   "use": "ok",
+   "owner": "Aquafeed",
+   "shows": "feed bags / products"
+  },
+  {
+   "path": "step1/brand/contactpage_image.jpg",
+   "use": "ok",
+   "owner": "Aquafeed",
+   "shows": "feed pellets falling in the factory line"
+  },
+  {
+   "path": "step1/stock/c31.jpg",
+   "use": "ok",
+   "owner": "Bdx, Wikimedia Commons",
+   "licence": "CC0",
+   "shows": "grilled trout on a plate"
+  },
+  {
+   "path": "step1/stock/c44.jpg",
+   "use": "ok",
+   "owner": "Remus Pereni, Wikimedia Commons",
+   "licence": "CC BY 2.0",
+   "credit": "Foto: Remus Pereni, CC BY 2.0",
+   "shows": "trout farm Mara, Maramureș"
+  },
+  {
+   "path": "step1/brand/grower_trout.jpg",
+   "use": "no",
+   "why": "AI-generated, rejected by Cristi"
+  },
+  {
+   "path": "BioMar post images",
+   "use": "pending",
+   "why": "written OK from BioMar not yet received"
+  }
+ ]
+}

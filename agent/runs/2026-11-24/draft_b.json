@@ -1,0 +1,20 @@
+{
+ "kind": "post",
+ "image_paths": [
+  "agent/out/2026-11-24_b_virusuri.jpg"
+ ],
+ "text": "Un virus nu se vede. Iar un pește infectat nu arată mereu, din prima zi, că e bolnav.\n\nLa păstrăv, două boli virale sunt urmărite oficial în toată Uniunea Europeană: septicemia hemoragică virală (VHS) și necroza hematopoietică infecțioasă (IHN). Pentru ele nu există tratament, așa că totul ține de prevenție:\n\n1. Cumpărați icre și puiet doar din ferme cu statut de sănătate atestat.\n2. Țineți loturile noi separat o perioadă și dezinfectați echipamentele, plasele și cizmele.\n3. Reduceți stresul: densitate potrivită, manipulare cât mai rară, oxigen suficient.\n\nUn pește bine hrănit și fără stres are un sistem imunitar care lucrează în condiții bune. Dar furajul nu ține locul biosecurității.\n\nAți observat mortalitate neobișnuită? Sunați medicul veterinar sau DSVSA din județ. Pentru VHS și IHN, suspiciunea trebuie anunțată.\n\n#păstrăv #acvacultură",
+ "tags": {
+  "pillar": "farmer_education",
+  "format": "card",
+  "audience": "fermieri",
+  "topic": "biosecuritate",
+  "hook": "striking_fact",
+  "cta": "none",
+  "explore": true,
+  "test": "checklist numerotat + ton de avertizare, fără întrebare la final"
+ },
+ "suggested_time": "2026-11-28T10:00:00+02:00",
+ "summary": "Din seria BioMar Fish Health 101 (virusuri), dusă spre biosecuritate practică. Fapte: Reg. (UE) 2016/429 și 2018/1882 (VHS, IHN boli listate). Explore: checklist fără întrebare.",
+ "source_key": "t:1lb9pegioe8"
+}

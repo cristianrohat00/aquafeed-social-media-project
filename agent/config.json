@@ -1,0 +1,36 @@
+{
+  "api_base": "https://n8n.aquafeed-biomar.ro/webhook/aq",
+  "page_id": "101118028329592",
+  "timezone": "Europe/Bucharest",
+  "cadence": {
+    "posts_per_week": 4,
+    "max_drafts_per_run": 3,
+    "slots": ["Tue 19:00", "Thu 19:00", "Sat 10:00", "Sun 18:00"],
+    "min_hours_between_posts": 36
+  },
+  "pillar_mix": {
+    "farmer_education": 0.35,
+    "consumer_why_trout": 0.30,
+    "myth_vs_fact": 0.15,
+    "behind_the_scenes": 0.10,
+    "engagement": 0.10
+  },
+  "explore_share": 0.25,
+  "learning": {
+    "min_posts_per_variant_for_confidence": 5,
+    "decay_half_life_days": 60,
+    "insight_checkpoints_hours": [24, 72, 168]
+  },
+  "score_weights": {
+    "new_followers_per_1k_reach": 0.40,
+    "shares_per_1k_reach": 0.20,
+    "comments_per_1k_reach": 0.15,
+    "reactions_per_1k_reach": 0.15,
+    "clicks_per_1k_reach": 0.10
+  },
+  "insights_metrics": "post_total_media_view_unique,post_media_view,post_clicks,post_clicks_by_type,post_reactions_by_type_total",
+  "relevance": {
+    "high": ["trout", "salmonid", "freshwater", "rainbow trout", "RAS", "fish health", "immune", "feed", "FCR", "nutrition", "sustainab", "farmer", "Hands On Farming", "factory", "climate"],
+    "low": ["shrimp", "tilapia", "catfish", "Ecuador", "AquaExpo", "Guinea", "jellyfish", "newsletter"]
+  }
+}
