@@ -72,7 +72,8 @@ def main(argv):
     rows = []
     for r in posts:
         d = by_draft.get(r["draft_id"], {})
-        reach = max(1, r.get("reach") or 0)
+        # unique reach can lag at Meta (0 at 24h); fall back to views for the denominator
+        reach = max(1, (r.get("reach") or 0) or (r.get("views") or 0))
         k = 1000.0 / reach
         g = gains.get(r["fb_post_id"])
         rates = {
@@ -84,8 +85,8 @@ def main(argv):
         }
         age = (now - dt.datetime.fromisoformat(r["live_at"].replace("Z", "+00:00"))).days
         rows.append({"draft_id": r["draft_id"], "fb_post_id": r["fb_post_id"], "checkpoint": r["checkpoint"],
-                     "reach": r.get("reach") or 0, "followers": g, "rates": rates, "tags": d.get("tags") or {},
-                     "title": (d.get("text") or "")[:70], "age_days": age,
+                     "reach": reach if reach > 1 else 0, "followers": g, "rates": rates, "tags": d.get("tags") or {},
+                     "title": " ".join((d.get("text") or r.get("title") or "").split())[:70], "origin": r.get("origin") or "agent", "age_days": age,
                      "decay": 0.5 ** (age / L["decay_half_life_days"]), "provisional": r["checkpoint"] == "24h"})
 
     med = {}
@@ -115,6 +116,15 @@ def main(argv):
                                  "confidence": "ok" if a[2] >= L["min_posts_per_variant_for_confidence"] else "low"}
                                 for v, a in acc.items()), key=lambda z: -z["score"])
 
+    # agent vs current pipeline (step 6 parallel run)
+    by_origin = {}
+    for o in sorted(set(x["origin"] for x in rows)):
+        xs = [x for x in rows if x["origin"] == o and x["score"] is not None]
+        if xs:
+            by_origin[o] = {"posts": len(xs), "avg_score": round(sum(x["score"] for x in xs) / len(xs), 2),
+                            "avg_reach": round(sum(x["reach"] for x in xs) / len(xs)),
+                            "followers": round(sum(x["followers"] or 0 for x in xs), 1)}
+
     # approvals and edits (learning from Cristi)
     sup_path = os.path.join(HERE, "log", "superseded.txt")
     lines = open(sup_path, encoding="utf-8").read().splitlines() if os.path.exists(sup_path) else []
@@ -136,7 +146,7 @@ def main(argv):
     edit_stats = [{"draft_id": d["draft_id"], "words_before": len((d["original_text"] or "").split()),
                    "words_after": len((d["text"] or "").split())} for d in edits]
 
-    res = {"scored_posts": sorted(rows, key=lambda z: -(z["score"] or -1)), "medians": med, "variants": variants,
+    res = {"by_origin": by_origin, "scored_posts": sorted(rows, key=lambda z: -(z["score"] or -1)), "medians": med, "variants": variants,
            "decisions": {"total": len(dec), "edited": len(edits), "rejected": sum(1 for d in dec if d["status"] == "rejected"),
                          "rejected_by_pillar": {k: {"rejected": v[0], "of": v[1]} for k, v in rej.items()}, "edits": edit_stats}}
     if not md:
@@ -147,7 +157,12 @@ def main(argv):
         out.append("Încă nu sunt postări cu statistici (prima măsurătoare vine la 24 h după publicare).")
     for x in res["scored_posts"]:
         f = "?" if x["followers"] is None else f"{x['followers']:+.1f}"
-        out.append(f"- **{x['score']}** · {x['title']}… · reach {x['reach']} · urmăritori {f} · {x['checkpoint']}" + (" (provizoriu)" if x["provisional"] else ""))
+        out.append(f"- **{x['score']}** · [{'nou' if x['origin'] == 'agent' else 'vechi'}] {x['title']}… · reach {x['reach']} · urmăritori {f} · {x['checkpoint']}" + (" (provizoriu)" if x["provisional"] else ""))
+    if by_origin:
+        out.append("\n## Sistem nou (agent) vs pipeline actual")
+        for o, v in by_origin.items():
+            label = "agent (nou)" if o == "agent" else "pipeline actual"
+            out.append(f"- {label}: {v['posts']} postări · scor mediu {v['avg_score']} · reach mediu {v['avg_reach']} · urmăritori atribuiți {v['followers']:+}")
     out.append("\n## Ce funcționează (pe variante)")
     for key, vs in variants.items():
         if vs:

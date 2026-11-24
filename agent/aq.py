@@ -14,6 +14,7 @@ session's network proxy, so no key is read or stored here.
   python agent/aq.py memory-get KEY [OUT_FILE]     -> agent memory in n8n (playbook, superseded, weekly:<date>, run:<date>)
   python agent/aq.py memory-put KEY FILE           -> save a file's text under KEY
   python agent/aq.py memory-list [PREFIX]          -> keys in memory
+  python agent/aq.py page-posts [DAYS]             -> what is already on the page (published + scheduled, agent or pipeline)
 """
 import base64, json, os, subprocess, sys
 
@@ -96,6 +97,8 @@ def main(a):
             res = r
     elif cmd == "memory-put":
         res = call("POST", "/memory", {"k": a[1], "v": open(a[2], encoding="utf-8").read()})
+    elif cmd == "page-posts":
+        res = call("GET", "/page-posts", query="?days=" + (a[1] if len(a) > 1 else "30"))
     elif cmd == "memory-list":
         res = call("GET", "/memory", query="?prefix=" + (a[1] if len(a) > 1 else ""))
     else:

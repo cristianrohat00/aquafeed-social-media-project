@@ -8,6 +8,9 @@ Runs every Monday morning, before the daily run. Fresh session: read the repo fi
 - `python agent/aq.py stats`: `page_days` gives the week's follower change (last day − first day).
 - `python agent/aq.py comments 7`: questions and leads from comments and messages.
 
+## 1b. Parallel run (until cutover)
+`score.py --md` has a section *Sistem nou (agent) vs pipeline actual*: posts, average score, average reach, followers for each system. Put it in the report as one line: „Nou vs vechi: <scor> vs <scor> (n=<a> / <b>)”. Do not learn voice or rules from pipeline posts (they are translations), only use them as the comparison baseline.
+
 ## 2. Learn from performance
 - Use only posts with a 72h or 168h checkpoint; 24h-only scores are provisional.
 - For each tag (pillar, format, hook, audience, cta, topic), compare variant scores. A variant with **n < 5** stays a *hypothesis* (low confidence), never a rule.

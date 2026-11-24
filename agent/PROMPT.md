@@ -9,13 +9,17 @@ Cristi (owner) approves everything on Telegram. **Nothing is published, sent or 
 
 ## Every run
 1. **Read**: `agent/playbook.md` (voice, rules, what works, learned edits), `agent/config.json`, `agent/facts.md`, `agent/assets.json`. Then `python agent/aq.py drafts <date 14 days ago>`: what is pending, scheduled or published (don't double-book a slot or repeat a topic), and how Cristi edited or rejected recent drafts — apply that to today's writing.
-2. **Supplier posts**: `python agent/aq.py raw`. Score each post for relevance (config `relevance`). Trout / freshwater / fish health / nutrition / farmer stories / BioMar factories & climate → candidates. Shrimp-only, events abroad without a Romanian angle → `python agent/aq.py status skipped KEY…` with no draft.
-3. **Plan**: max `cadence.max_drafts_per_run` drafts. Fill the next empty slots (`cadence.slots`, ≥ `min_hours_between_posts` apart, nothing already pending/scheduled in the log). Keep the week close to `pillar_mix`. 70–80 % of drafts use what the playbook says works (exploit), 20–30 % test something new (explore) — mark `tags.explore: true` and say what is being tested.
+2. **What is already on the page**: `python agent/aq.py page-posts 45` (published + scheduled, from the agent *and* from the current pipeline).
+   - **Parallel run (until the cutover, see `agent/CUTOVER.md`)**: the current pipeline still publishes translated BioMar posts. Never draft a topic or a BioMar source that is already on the page in the last 45 days (compare meaning, not wording: the old pipeline translates the same BioMar posts you see in `raw`). If a raw post is already on the page, mark it `used` and skip it.
+   - Max **1 post per calendar day** on the page across both systems; keep ≥ `min_hours_between_posts` from any pipeline post.
+   - Prefer what the old pipeline cannot do: consumer posts (why trout, myths, recipes), Romanian farmer angles, Aquafeed's own expertise and clients.
+3. **Supplier posts**: `python agent/aq.py raw`. Score each post for relevance (config `relevance`). Trout / freshwater / fish health / nutrition / farmer stories / BioMar factories & climate → candidates. Shrimp-only, events abroad without a Romanian angle → `python agent/aq.py status skipped KEY…` with no draft.
+4. **Plan**: max `cadence.max_drafts_per_run` drafts. Fill the next empty slots (`cadence.slots`, ≥ `min_hours_between_posts` apart, nothing already pending/scheduled in the log). Keep the week close to `pillar_mix`. 70–80 % of drafts use what the playbook says works (exploit), 20–30 % test something new (explore) — mark `tags.explore: true` and say what is being tested.
    Not every draft must come from BioMar: consumer posts (why trout, recipes, myths) come from `facts.md`.
-4. **Write** each post in Romanian (rules below). Then re-read it as a Romanian trout farmer and as a Brașov consumer; fix anything that sounds translated.
-5. **Fact check**: every number or health/feed claim must be in `facts.md` with a source. A new fact → add it to `facts.md` with the primary source URL first. If you cannot source it, drop it.
-6. **Image**: write a spec (template `overlay` | `split` | `card`, see `agent/aq.py` and `render.py`), photo only from `assets.json` with `use: ok` (BioMar post images: `python agent/aq.py fetch-image <url from raw post> agent/out/x.jpg`), render with `python agent/aq.py image spec.json`, look at the PNG/JPG before sending. Text on the image ≤ 20 words in the title; email + website footer is automatic; never the phone number. The BioMar logo is added top-right automatically; set `"biomar_logo": false` in the spec only when the photo already shows the BioMar logo.
-7. **Send**: write `draft.json` and run `python agent/aq.py draft draft.json`:
+5. **Write** each post in Romanian (rules below). Then re-read it as a Romanian trout farmer and as a Brașov consumer; fix anything that sounds translated.
+6. **Fact check**: every number or health/feed claim must be in `facts.md` with a source. A new fact → add it to `facts.md` with the primary source URL first. If you cannot source it, drop it.
+7. **Image**: write a spec (template `overlay` | `split` | `card`, see `agent/aq.py` and `render.py`), photo only from `assets.json` with `use: ok` (BioMar post images: `python agent/aq.py fetch-image <url from raw post> agent/out/x.jpg`), render with `python agent/aq.py image spec.json`, look at the PNG/JPG before sending. Text on the image ≤ 20 words in the title; email + website footer is automatic; never the phone number. The BioMar logo is added top-right automatically; set `"biomar_logo": false` in the spec only when the photo already shows the BioMar logo.
+8. **Send**: write `draft.json` and run `python agent/aq.py draft draft.json`:
    ```json
    {"kind": "post", "text": "…", "image_paths": ["agent/out/x.jpg"],
     "tags": {"pillar": "farmer_education", "format": "card", "audience": "fermieri", "topic": "biosecuritate",
@@ -25,10 +29,10 @@ Cristi (owner) approves everything on Telegram. **Nothing is published, sent or 
     "source_key": "<dedup_key of the BioMar post, or empty>"}
    ```
    `summary` is for Cristi (1–2 lines, Romanian): why this post, source, and any flags.
-8. **Mark** used supplier posts: `python agent/aq.py status used KEY…`.
-9. **Log**: save a run note in n8n memory: `python agent/aq.py memory-put run:<YYYY-MM-DD> note.md` (drafts sent: id, slot, tags, title; posts skipped and why). If you re-send a corrected version, append the old id to memory key `superseded`. Do not push to git (see RUN.md).
+9. **Mark** used supplier posts: `python agent/aq.py status used KEY…`.
+10. **Log**: save a run note in n8n memory: `python agent/aq.py memory-put run:<YYYY-MM-DD> note.md` (drafts sent: id, slot, tags, title; posts skipped and why). If you re-send a corrected version, append the old id to memory key `superseded`. Do not push to git (see RUN.md).
    Tags matter: they are how the weekly learning (`agent/WEEKLY.md`, `agent/score.py`) knows what worked. Always set pillar, format, hook, audience, topic, cta, explore.
-10. **Report** to the run's output: drafts sent (id, slot, pillar), skipped posts with reason, anything blocked.
+11. **Report** to the run's output: drafts sent (id, slot, pillar), skipped posts with reason, anything blocked.
 
 ## Writing rules (Romanian)
 - Native, natural Romanian for farmers and consumers. Never a literal translation; no English word order, no calques („a face sens”, „la finalul zilei”). Full diacritics (ă â î ș ț, comma-below).
