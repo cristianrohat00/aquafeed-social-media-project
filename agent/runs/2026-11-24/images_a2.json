@@ -1,0 +1,17 @@
+[
+ {
+  "template": "split",
+  "photo_path": "step1/brand/home-page.jpg",
+  "kicker": "Fermieri care inspiră",
+  "title": "De la Bretania la Carpați: aceleași provocări",
+  "body": "Apa care se încălzește vara, oxigenul, sănătatea peștilor, furajul potrivit.\n\nThomas Tison crește păstrăv în Franța. Ce a învățat se aplică și la noi.",
+  "out": "agent/out/2026-11-24_a2_kerinec.jpg",
+  "photo_h": 660,
+  "crop": [
+   0.05,
+   0.0,
+   0.95,
+   0.85
+  ]
+ }
+]

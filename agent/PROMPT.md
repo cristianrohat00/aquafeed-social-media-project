@@ -42,6 +42,7 @@ Cristi (owner) approves everything on Telegram. **Nothing is published, sent or 
 - **No exaggerated health claims** about fish or feed. No „vindecă”, „previne bolile”, „cel mai sănătos”. Facts only, with sources. Nutrition *supports*, it does not *cure*.
 - No clickbait, no fake urgency, no invented numbers. Illustrative numbers are labelled „cifre ilustrative”.
 - No competitor bashing. No prices unless Cristi provides them.
+- **No photos from the internet** (Google, Wikimedia, stock sites) unless Cristi approves that specific photo. Allowed: Aquafeed's own photos, client-farm photos in `assets.json`, photos Cristi sends.
 - BioMar images: **flag in `summary`** that written OK from BioMar is still pending (do not block). Prefer Aquafeed's own photos and free-licence stock.
 - Never put keys or tokens in files, drafts or logs.
 - Ads: propose only as `kind: "ad"` drafts (audience, budget, duration, stop rule). They are created PAUSED and Cristi activates them.

@@ -1,5 +1,5 @@
 {
- "_note": "Photos the agent may use. use=ok: free to use. use=pending: needs written OK (do not use). use=no: never.",
+ "_note": "Photos the agent may use. use=ok: free to use. use=pending: needs written OK. use=no: never. RULE: no photos from the internet (Google, Wikimedia, stock sites) unless Cristi approves that specific photo. Sources allowed: Aquafeed's own photos, client farms listed here, photos Cristi sends.",
  "photos": [
   {
    "path": "step1/brand/home-page.jpg",
@@ -33,18 +33,20 @@
   },
   {
    "path": "step1/stock/c31.jpg",
-   "use": "ok",
+   "use": "no",
    "owner": "Bdx, Wikimedia Commons",
    "licence": "CC0",
-   "shows": "grilled trout on a plate"
+   "shows": "grilled trout on a plate",
+   "why": "internet / stock photo: only if Cristi explicitly approves this photo"
   },
   {
    "path": "step1/stock/c44.jpg",
-   "use": "ok",
+   "use": "no",
    "owner": "Remus Pereni, Wikimedia Commons",
    "licence": "CC BY 2.0",
    "credit": "Foto: Remus Pereni, CC BY 2.0",
-   "shows": "trout farm Mara, Maramureș"
+   "shows": "trout farm Mara, Maramureș",
+   "why": "internet / stock photo: only if Cristi explicitly approves this photo"
   },
   {
    "path": "step1/brand/grower_trout.jpg",
@@ -55,6 +57,20 @@
    "path": "BioMar post images",
    "use": "pending",
    "why": "written OK from BioMar not yet received"
+  },
+  {
+   "path": "clients/pastravaria-albota/",
+   "use": "ok",
+   "owner": "Păstrăvăria Albota (client)",
+   "why": "Cristi: photos may be used",
+   "status": "photos to be supplied by Cristi"
+  },
+  {
+   "path": "clients/pastravaria-la-mitica/",
+   "use": "ok",
+   "owner": "Păstrăvăria La Mitica (client)",
+   "why": "Cristi: photos may be used",
+   "status": "photos to be supplied by Cristi"
   }
  ]
 }
