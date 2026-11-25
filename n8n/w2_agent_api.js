@@ -230,7 +230,7 @@ const whImg = trigger({ type: 'n8n-nodes-base.webhook', version: 2.1,
   output: [{ body: { url: 'https://scontent.fbcdn.net/x.jpg' } }] });
 const checkUrl = node({ type: 'n8n-nodes-base.code', version: 2,
   config: { name: 'Allowed host?', position: [240, 1780], parameters: { mode: 'runOnceForAllItems',
-    jsCode: "const u = String((($input.first().json.body) || {}).url || '');\nconst m = u.match(/^https:\\/\\/([^\\/?#]+)\\//i);\nconst host = m ? m[1].toLowerCase() : '';\nconst ok = /(^|\\.)(fbcdn\\.net|cdninstagram\\.com|licdn\\.com|biomar\\.com)$/.test(host);\nif (!ok) throw new Error('host not allowed: ' + host);\nreturn [{ json: { url: u } }];" } },
+    jsCode: "const u = String((($input.first().json.body) || {}).url || '');\nconst m = u.match(/^https:\\/\\/([^\\/?#]+)\\//i);\nconst host = m ? m[1].toLowerCase() : '';\nconst ok = /(^|\\.)(fbcdn\\.net|cdninstagram\\.com|licdn\\.com|biomar\\.com|export-download\\.canva\\.com)$/.test(host);\nif (!ok) throw new Error('host not allowed: ' + host);\nreturn [{ json: { url: u } }];" } },
   output: [{ url: 'https://scontent.fbcdn.net/x.jpg' }] });
 const dlImg = node({ type: 'n8n-nodes-base.httpRequest', version: 4.4,
   config: { name: 'Download image', position: [480, 1780],
@@ -243,7 +243,7 @@ const toB64 = node({ type: 'n8n-nodes-base.code', version: 2,
 const respImg = node({ type: 'n8n-nodes-base.respondToWebhook', version: 1.5,
   config: { name: 'Respond image', position: [960, 1780], parameters: { respondWith: 'firstIncomingItem' } } });
 
-const note = sticky('## AQ Agent API (copy)\nEndpoints for the Claude agent. All need header auth (credential "AQ Agent API key").\n- GET  /webhook/aq/raw-posts  -> new supplier posts\n- POST /webhook/aq/raw-posts-status {dedup_keys, status}\n- POST /webhook/aq/draft {kind, text, images[{b64}], tags, suggested_time, summary, target_id} -> Telegram (TEST bot) with buttons, row in aq_drafts\n- GET  /webhook/aq/insights?post_ids=a,b[&metrics=]\n- GET  /webhook/aq/comments?days=7\n- GET  /webhook/aq/drafts?since=YYYY-MM-DD (status, tags, original vs approved text, edit_log)\n- GET  /webhook/aq/stats (aq_post_stats + aq_page_daily)\n- POST /webhook/aq/fetch-image {url} -> {b64, mime} (fbcdn / cdninstagram / licdn / biomar.com only)\nApproval + publishing happen in "AQ Approval handler [copy]". Paused ads: created there on approval of kind=ad (needs Ad Account ID).', [], { color: 5, width: 560, height: 380, position: [1000, -140] });
+const note = sticky('## AQ Agent API (copy)\nEndpoints for the Claude agent. All need header auth (credential "AQ Agent API key").\n- GET  /webhook/aq/raw-posts  -> new supplier posts\n- POST /webhook/aq/raw-posts-status {dedup_keys, status}\n- POST /webhook/aq/draft {kind, text, images[{b64}], tags, suggested_time, summary, target_id} -> Telegram (TEST bot) with buttons, row in aq_drafts\n- GET  /webhook/aq/insights?post_ids=a,b[&metrics=]\n- GET  /webhook/aq/comments?days=7\n- GET  /webhook/aq/drafts?since=YYYY-MM-DD (status, tags, original vs approved text, edit_log)\n- GET  /webhook/aq/stats (aq_post_stats + aq_page_daily)\n- POST /webhook/aq/fetch-image {url} -> {b64, mime} (fbcdn / cdninstagram / licdn / biomar.com / Canva exports only)\nApproval + publishing happen in "AQ Approval handler [copy]". Paused ads: created there on approval of kind=ad (needs Ad Account ID).', [], { color: 5, width: 560, height: 380, position: [1000, -140] });
 
 export default workflow('aq-agent-api', 'AQ Agent API [copy]')
   .add(whRaw).to(getNew).to(packRaw).to(respRaw)
